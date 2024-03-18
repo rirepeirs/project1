@@ -4,11 +4,11 @@ Jinja2 Documentation:    https://jinja.palletsprojects.com/
 Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file contains the routes for your application.
 """
-
+import os
 from app import app
-from flask import render_template, request, redirect, url_for
-
-
+from flask import render_template, request, redirect, url_for, flash
+from app.forms import Form
+from werkzeug.utils import secure_filename
 ###
 # Routing for your application.
 ###
@@ -24,8 +24,35 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Mary Jane")
 
+@app.route("/properties/create", methods=['POST','GET'])
+def new():
+    from . import db
+    from .models import property
+    form= Form()
+    if form.validate_on_submit:
+        name= form.name.data
+        no_of_beds= form.no_of_beds.data
+        no_of_baths= form.no_of_baths.data
+        location= form.location.data
+        amount= form.amount.data
+        type= form.type.data
+        description= form.description.data
+        if 'photo' in request.files:
+            photo = secure_filename(photo.filename)  # Secure the filename
+            if  photo.filename != '':
+                filename = secure_filename(photo.filename)
+                photo.save(os.path.join(app.config['UPLOAD_FOLDER'], photo))
+        flash('Successfully added!', 'success')
+        return redirect(url_for("properties"))
+    return render_template("forms.html", form=form)
 
-###
+@app.route('/properties', methods=['GEt'])
+def properties():
+    from . import db
+    prop_q=db.property.query.all()
+    return render_template('properties.html', properties=prop_q)
+
+@app.route('/properties/<propertyid>', methods=['GET'])
 # The functions below should be applicable to all Flask apps.
 ###
 
@@ -37,6 +64,7 @@ def flash_errors(form):
                 getattr(form, field).label.text,
                 error
             ), 'danger')
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
