@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    <h1>Add New Property</h1>
+    <form method="POST", enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form" id="name">
+            {{ form.name.label }}<br>
+            {{ form.name() }}
+        </div>
+        <div class="form" id="description">
+            {{ form.description.label }}<br>
+            {{ form.description() }}
+        </div>
+
+        <div class="grid-template">   
+            <div class="form" id="beds">
+                {{ form.no_of_beds.label }}<br>
+                {{ form.no_of_beds() }}
+            </div>
+            <div class="form" id="baths">
+                {{ form.no_of_baths.label }}<br>
+                {{ form.no_of_baths() }}
+            </div>
+            <div class="form" id="price">
+                {{ form.amount.label }}<br>
+                {{ form.amount() }}
+            </div>
+            <div class="form" id="type">
+                {{ form.type.label }}<br>
+                {{ form.type() }}
+            </div>
+            <div class="form" id="location">
+                {{ form.location.label }}<br>
+                {{ form.location() }}
+            </div>
+        </div>   
+
+        <div class="form" id="pic">
+            {{ form.photo.label }}<br>
+            {{ form.photo() }}
+        </div>
+        <div class="form" id="button">
+            <input type="submit" value="Add Propety">
+        </div>
+    </form>
+{% block main %}
